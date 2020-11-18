@@ -18,6 +18,7 @@ class Posts extends Migration
             $table->id();
             $table->string('title');
             $table->string('text');
+            $table->foreignId('user_id');
             $table->timestamps();
         });
     }

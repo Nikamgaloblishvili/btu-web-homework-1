@@ -5,12 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use Redirect;
+use Auth;
+use App\Models\User;
+use DB;
 
 class PostsController extends Controller
 {
 
 	public function show() {
-		$posts = Post::all();
+		// $posts = Post::all();
+		$posts = DB::table("posts")
+			// ->take("posts.id", "posts.title", "posts.text", "users.name", "users.email")
+			->join("users", "posts.user_id", "=", "users.id")
+			->get();
 		return view("list", compact("posts"));
 	}
 
@@ -26,10 +33,14 @@ class PostsController extends Controller
 
 
 	public function createPostRecord(Request $request) {
+
 		$post = new Post();
 		$post->title = $request->get("news_title");
 		$post->text = $request->get("news_text");
-		$post->save();
+        $post->user_id = Auth::id();
+        $post->save();
+
+
 		return Redirect::back()->with("message", "სიახლე წარმატებით დაემატა");
 	}
 
@@ -48,5 +59,12 @@ class PostsController extends Controller
 		$post->save();
 		return Redirect::back()->with("message", "სიახლე წარმატებით დააბდეითდა");
 	}
+
+	public function ownPosts() {
+        $posts = Post::all()->where('user_id', Auth::id());
+        $author = User::find(Auth::id());
+        return view('my', compact('posts', 'author'));
+    }
+
 
 }
