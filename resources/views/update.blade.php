@@ -10,11 +10,9 @@
             </div>
             <div class="form-group">
                 @if(Session::get("message"))
-
                     <div class="alert alert-success">
                         {{ Session::get("message") }}
                     </div>
-
                 @endif
             </div>
             <div class="form-group">

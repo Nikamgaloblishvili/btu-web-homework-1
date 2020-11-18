@@ -15,9 +15,23 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                <ul class="navbar-nav">
-                  <li class="nav-item active">
-                     <a class="nav-link" href="/create">სიახლის დამატება <span class="sr-only">(current)</span></a>
-                  </li>
+                  
+                     @auth
+                        <li class="nav-item active">
+                           <a class="nav-link" href="/posts/my-posts">ჩემი პოსტები</a>
+                        </li>
+                        <li class="nav-item active">
+                           <a class="nav-link" href="/posts/create">სიახლის დამატება</a>
+                        </li>
+                        <li class="nav-item active">
+                           <a class="nav-link" href="/logout">გასვლა</a>
+                        </li>
+                     @else
+                        <li class="nav-item active">
+                           <a class="nav-link" href="/login">შესვლა</a>
+                        </li>
+                     @endif
+                  
                </ul>
             </div>
          </nav>

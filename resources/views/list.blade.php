@@ -13,9 +13,12 @@
                     <div class="ml-12">
                         <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
                             {{ $post->text }}
+                            <p>Author: {{ $post->name }}</p>
                         </div>
                     </div>
-                    <a href="/delete/{{ $post->id }}" class="dark:text-gray-400 text-sm">Delete</a>
+                    @if(Auth::id() == $post->user_id)
+                        <a href="/delete/{{ $post->id }}" class="dark:text-gray-400 text-sm">Delete</a>
+                    @endif
                 </div>
             </div>
         </div>

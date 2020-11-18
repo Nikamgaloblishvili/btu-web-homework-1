@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\PostsController;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,11 +16,36 @@ use App\Http\Controllers\PostsController;
 |
 */
 
-Route::get('/', [PostsController::class, 'show']);
-Route::get('/create', [PostsController::class, 'create']);
-Route::post('/create', [PostsController::class, 'createPostRecord']);
+Route::get('/', [PostsController::class, 'show'])->name("home")->middleware("auth");
 
-Route::get('/delete/{id}', [PostsController::class, 'deleteById']);
+// Route::get('/create', [PostsController::class, 'create']);
+// Route::post('/create', [PostsController::class, 'createPostRecord']);
+// Route::get('/delete/{id}', [PostsController::class, 'deleteById']);
+// Route::get('/update/{id}', [PostsController::class, 'update']);
+// Route::post('/update', [PostsController::class, 'updateRecord']);
 
-Route::get('/update/{id}', [PostsController::class, 'update']);
-Route::post('/update', [PostsController::class, 'updateRecord']);
+
+Route::get('/register', [AuthController::class, 'register'])->name('register');
+Route::post('/register', [AuthController::class, 'postRegister'])->name('post_register');
+Route::get('/login', [AuthController::class, 'login'])->name('login');
+Route::post('/login', [AuthController::class, 'postLogin'])->name('post_login');
+
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::group([
+	'middleware' => 'auth',
+	'prefix' => 'posts'
+], function() {
+
+	Route::get('/', [PostsController::class, 'index'])->name('posts');
+
+    Route::get('/my-posts', [PostsController::class, 'ownPosts'])->name('ownposts');
+
+    Route::get('/create', [PostsController::class, 'create'])->name('posts.create');
+    Route::post('/create', [PostsController::class, 'createPostRecord'])->name('posts.create');
+
+    Route::put('/{post}/update', [PostsController::class, 'update'])->name('posts.update');
+
+    Route::get('/delete/{id}', [PostsController::class, 'deleteById']);
+
+});
