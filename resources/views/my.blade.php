@@ -12,22 +12,26 @@
         	<div>{{ $author->name }}</div>
         	<div>{{ $author->email }}</div>
         </div>
-	
-		@foreach($posts as $post)
 
-            <div class="flex items-center">
-                <span class="underline text-gray-900 dark:text-white">
-                    {{$post->title}}
-                </span>
-            </div>
 
-            <div class="ml-12">
-                <div class="mt-2 text-gray-600 dark:text-gray-400 text-sm">
-                    {{$post->content}}
-                </div>
-            </div>
-
-	    @endforeach
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <td>id</td>
+                    <td>title</td>
+                    <td>content</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($posts as $post)
+                <tr class="{{ ($post->is_published) ? "success" : "error" }}">
+                    <td>{{$post->id}}</td>
+                    <td>{{$post->title}}</td>
+                    <td>{{$post->text}}</td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
 
     </div>
 

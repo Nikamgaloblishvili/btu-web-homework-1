@@ -18,13 +18,6 @@ use App\Http\Controllers\AuthController;
 
 Route::get('/', [PostsController::class, 'show'])->name("home")->middleware("auth");
 
-// Route::get('/create', [PostsController::class, 'create']);
-// Route::post('/create', [PostsController::class, 'createPostRecord']);
-// Route::get('/delete/{id}', [PostsController::class, 'deleteById']);
-// Route::get('/update/{id}', [PostsController::class, 'update']);
-// Route::post('/update', [PostsController::class, 'updateRecord']);
-
-
 Route::get('/register', [AuthController::class, 'register'])->name('register');
 Route::post('/register', [AuthController::class, 'postRegister'])->name('post_register');
 Route::get('/login', [AuthController::class, 'login'])->name('login');
@@ -47,5 +40,9 @@ Route::group([
     Route::put('/{post}/update', [PostsController::class, 'update'])->name('posts.update');
 
     Route::get('/delete/{id}', [PostsController::class, 'deleteById']);
+
+    Route::middleware('admin')->group(function() {
+    	Route::get("publish/{id}", [PostsController::class, 'publishPost']);
+    });
 
 });
