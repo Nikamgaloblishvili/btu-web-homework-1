@@ -27,6 +27,7 @@ class AuthController extends Controller
 
         $user = new User($request->all());
         $user->password = bcrypt($request->password);
+        $user->role = "journalist";
         $user->save();
         return redirect()->route('home');
     }

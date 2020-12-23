@@ -7,16 +7,16 @@ use App\Models\Post;
 use Redirect;
 use Auth;
 use App\Models\User;
+use App\Notifications\PostPublish;
 use DB;
 
 class PostsController extends Controller
 {
 
 	public function show() {
-		// $posts = Post::all();
-		$posts = DB::table("posts")
-			// ->take("posts.id", "posts.title", "posts.text", "users.name", "users.email")
-			->join("users", "posts.user_id", "=", "users.id")
+		$posts = DB::table("posts AS t1")
+			->select("t1.id", "t1.title", "t1.text", "t1.user_id", "t1.is_published", "t2.name as name")
+			->join("users AS t2", "t1.user_id", "=", "t2.id")
 			->get();
 		return view("list", compact("posts"));
 	}
@@ -38,6 +38,7 @@ class PostsController extends Controller
 		$post->title = $request->get("news_title");
 		$post->text = $request->get("news_text");
         $post->user_id = Auth::id();
+        $post->is_published = 0;
         $post->save();
 
 
@@ -47,8 +48,19 @@ class PostsController extends Controller
 
 	public function update($id) {
 		$post = Post::find($id);
-		// dd($post);
 		return view("update", compact("post"));
+	}
+
+	public function publishPost($postId) {
+		$post = Post::find($postId);
+		$post->is_published = 1;
+		$post->save();
+		
+		$data = [
+			'post_id' => $postId
+		];
+		Auth::user()->notify(new PostPublish($data));
+		return response()->json(["res" => true]);
 	}
 
 

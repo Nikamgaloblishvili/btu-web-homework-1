@@ -16,8 +16,21 @@
                             <p>Author: {{ $post->name }}</p>
                         </div>
                     </div>
+
+                    <div id="is_published_{{ $post->id }}">
+                        @if(!$post->is_published && Auth::user()->role !== 'admin')
+                            გამოუქვეყნებელი
+                        @elseif(!$post->is_published  && Auth::user()->role == 'admin')
+                            <a href="/" onclick="publishNews({{ $post->id }}); return false;">
+                                გამოქვეყნება
+                            </a>
+                        @else
+                            გამოქვეყნებული
+                        @endif
+                    </div>
+
                     @if(Auth::id() == $post->user_id)
-                        <a href="/delete/{{ $post->id }}" class="dark:text-gray-400 text-sm">Delete</a>
+                        <a href="/posts/delete/{{ $post->id }}" class="dark:text-gray-400 text-sm">Delete</a>
                     @endif
                 </div>
             </div>
@@ -26,5 +39,21 @@
         @endforeach
     </div>
 
+    <script>
+        const publishNews = (postId) => {
+            const publishNode = document.getElementById(`is_published_${postId}`)
+            publishNode.innerHTML += `<span>დაელოდეთ</span>`
+            fetch(`{{ url("/") }}/posts/publish/${postId}`)
+                .then(response => response.json())
+                .catch((error) => alert("დაფიქსირდა შეცდომა, სცადეთ მოგვიანებით"))
+                .then(response => {
+                    publishNode.childNodes[0].innerHTML = ''
+                    if (response.res)
+                        publishNode.innerHTML = "გამოქვეყნებული"
+                    else 
+                        alert("დაფიქსირდა შეცდომა, სცადეთ მოგვიანებით")
+                });
+        }
+    </script>
 
 @endsection
